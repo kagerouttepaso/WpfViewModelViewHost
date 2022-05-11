@@ -1,13 +1,13 @@
-﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
-using Microsoft.Toolkit.Mvvm.Input;
+﻿using killmewpf.Ioc;
+using killmewpf.Message;
+using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Reactive.Bindings;
-using Reactive.Bindings.Extensions;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 
 namespace killmewpf.ViewModel
 {
-    public class MainWindowViewModel : ObservableObject
+    public class MainWindowViewModel : ObservableObject, ITransientService
     {
         private ObservableCollection<ISubViewModel> _subViewModels = new ObservableCollection<ISubViewModel>()
         {
@@ -26,25 +26,26 @@ namespace killmewpf.ViewModel
 
         public string Title => "Sample";
 
-
-        public AsyncReactiveCommand TestCommand { get; } 
+        public AsyncReactiveCommand TestCommand { get; }
 
         private async Task<string> TestAsync()
         {
             await Task.Delay(1000);
             _subViewModels.Add(new SubViewModel1());
+            await messageBoxHandler.InvokeAsync("テスト");
             await Task.Delay(1000);
             _subViewModels.Add(new SubViewModel2());
 
             return "Comp";
         }
 
+        private readonly IMessageBoxHandler messageBoxHandler;
 
-        public MainWindowViewModel()
+        public MainWindowViewModel(IMessageBoxHandler messageBoxHandler)
         {
+            this.messageBoxHandler = messageBoxHandler;
             TestCommand = new AsyncReactiveCommand()
                 .WithSubscribe(TestAsync);
         }
     }
-
 }

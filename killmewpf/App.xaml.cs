@@ -1,17 +1,18 @@
-﻿using killmewpf.View;
+﻿using killmewpf.Ioc;
+using killmewpf.View;
 using killmewpf.ViewModel;
-using System.Reactive.Linq;
+using MessagePipe;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Reactive.Bindings.Extensions;
 using System;
 using System.IO;
 using System.Reactive.Disposables;
+using System.Reactive.Linq;
 using System.Windows;
-using System.Windows.Data;
 using ZLogger;
-using Reactive.Bindings.Extensions;
 
 namespace killmewpf
 {
@@ -40,6 +41,7 @@ namespace killmewpf
             this.Resources.RegistorDataTemplate<SubView1, SubViewModel1>();
 
             this.MainWindow = host.Services.GetRequiredService<MainWindow>();
+            this.MainWindow.DataContext = host.Services.GetRequiredService<MainWindowViewModel>();
             this.MainWindow.Show();
         }
 
@@ -61,7 +63,16 @@ namespace killmewpf
                     service.AddSingleton(appConst);
                     service.Configure<AppConfig>(context.Configuration);
 
-                    service.AddSingleton<MainWindow>();
+                    service.Scan(scan => scan
+                        .FromApplicationDependencies()
+                            .AddClasses(c => c.AssignableTo<ISingletonService>()).AsSelfWithInterfaces().WithSingletonLifetime()
+                            .AddClasses(c => c.AssignableTo<ITransientService>()).AsSelfWithInterfaces().WithTransientLifetime());
+
+                    service.AddMessagePipe(o =>
+                    {
+                        o.EnableAutoRegistration = true;
+                        o.EnableCaptureStackTrace = true;
+                    });
                 })
                 .ConfigureLogging((context, logging) =>
                 {
@@ -77,7 +88,6 @@ namespace killmewpf
                 })
                 .Build();
 
-
             return host;
         }
 
@@ -86,37 +96,6 @@ namespace killmewpf
             logger.ZLogInformation("app exit");
             await host.StopAsync(TimeSpan.FromSeconds(5));
             disposables.Dispose();
-            // base.OnExit(e);
         }
-    }
-    internal class AppConfig
-    {
-    }
-
-    public static class IViewForExtensions
-    {
-        public static void RegistorDataTemplate<TView, TViewModel>(this ResourceDictionary resourceDictionary)
-            where TView : class
-            where TViewModel : class
-        {
-            var dt = new DataTemplate()
-            {
-                DataType = typeof(TViewModel),
-            };
-
-            var vt = new FrameworkElementFactory(typeof(TView));
-            vt.SetBinding(SubView1.DataContextProperty, new Binding());
-            dt.VisualTree = vt;
-
-            resourceDictionary.Add(dt.DataTemplateKey, dt);
-        }
-    }
-
-
-    public class AppConst
-    {
-        public string LogDirName => "Log";
-
-        public string ConfigFileName => "hostConfig.json";
     }
 }

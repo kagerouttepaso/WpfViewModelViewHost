@@ -16,7 +16,6 @@
     <StackPanel>
         <TextBlock Text="{Binding Path=Title}" />
         <Button Command="{Binding TestCommand}" Content="Test" />
-        <TextBlock Text="{Binding TestCommand.IsRunning}" />
         <ListView
             ItemsSource="{Binding SubViewModels}"
             VirtualizingPanel.IsVirtualizing="True"

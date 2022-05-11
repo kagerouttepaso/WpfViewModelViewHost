@@ -1,5 +1,4 @@
-﻿using killmewpf.ViewModel;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 
 namespace killmewpf.View
 {
