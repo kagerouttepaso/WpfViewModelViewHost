@@ -5,7 +5,9 @@
     xmlns:local="clr-namespace:killmewpf"
     xmlns:v="clr-namespace:killmewpf.View"
     xmlns:vm="clr-namespace:killmewpf.ViewModel"
-    Startup="Application_Startup">
+    Startup="Application_Startup"
+    Exit="Application_Exit"
+    >
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
