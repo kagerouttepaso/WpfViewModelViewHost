@@ -12,14 +12,29 @@
     d:DataContext="{d:DesignInstance Type=vm:MainWindowViewModel,
                                      IsDesignTimeCreatable=True}"
     mc:Ignorable="d">
-    <Window.Resources>
-    </Window.Resources>
+    <Window.Resources />
     <StackPanel>
         <TextBlock Text="{Binding Path=Title}" />
         <ListView
-            ItemsSource="{Binding Path=SubViewModels}"
+            ItemsSource="{Binding SubViewModels}"
             VirtualizingPanel.IsVirtualizing="True"
             VirtualizingPanel.VirtualizationMode="Standard">
+            <d:ListView.ItemsSource>
+                <x:Array Type="{x:Type vm:ISubViewModel}">
+                    <vm:SubViewModel1 />
+                    <vm:SubViewModel2 />
+                    <vm:SubViewModel1 />
+                    <vm:SubViewModel2 />
+                </x:Array>
+            </d:ListView.ItemsSource>
+            <ListView.Resources>
+                <DataTemplate DataType="{x:Type vm:SubViewModel2}">
+                    <StackPanel>
+                        <TextBlock Text="自作です" />
+                        <v:SubView2 Margin="10,0,0,0" DataContext="{Binding}" />
+                    </StackPanel>
+                </DataTemplate>
+            </ListView.Resources>
         </ListView>
     </StackPanel>
 </Window>
