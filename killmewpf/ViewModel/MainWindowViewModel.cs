@@ -7,6 +7,7 @@ using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Reactive.Disposables;
 using System.Threading.Tasks;
 
@@ -36,7 +37,10 @@ namespace killmewpf.ViewModel
             await Task.Delay(1000);
             await Task.Run(() =>
             {
-                dataModel.SubViewModels.Add(new SubViewModel2());
+                dataModel.SubViewModels
+                    .AddRange(Enumerable
+                        .Range(0, 1000)
+                        .Select(x => new SubViewModel2(x)));
             });
 
             return "Comp";

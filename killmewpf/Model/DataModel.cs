@@ -10,7 +10,7 @@ namespace killmewpf.Model
         public DataModel()
         {
             SubViewModels.Add(new SubViewModel1());
-            SubViewModels.Add(new SubViewModel2());
+            SubViewModels.Add(new SubViewModel2(0));
         }
     }
 }

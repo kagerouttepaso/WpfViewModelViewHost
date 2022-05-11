@@ -13,19 +13,21 @@
                                      IsDesignTimeCreatable=True}"
     mc:Ignorable="d">
     <Window.Resources />
-    <StackPanel>
-        <TextBlock Text="{Binding Path=Title}" />
-        <Button Command="{Binding TestCommand}" Content="Test" />
+    <DockPanel>
+        <TextBlock DockPanel.Dock="Top" Text="{Binding Path=Title}" />
+        <Button
+            Command="{Binding TestCommand}"
+            Content="Test"
+            DockPanel.Dock="Top" />
         <ListView
             ItemsSource="{Binding SubViewModels}"
+            ScrollViewer.HorizontalScrollBarVisibility="Auto"
             VirtualizingPanel.IsVirtualizing="True"
-            VirtualizingPanel.VirtualizationMode="Standard">
+            VirtualizingPanel.VirtualizationMode="Recycling">
             <d:ListView.ItemsSource>
                 <x:Array Type="{x:Type vm:ISubViewModel}">
                     <vm:SubViewModel1 />
-                    <vm:SubViewModel2 />
                     <vm:SubViewModel1 />
-                    <vm:SubViewModel2 />
                 </x:Array>
             </d:ListView.ItemsSource>
             <ListView.Resources>
@@ -37,5 +39,5 @@
                 </DataTemplate>
             </ListView.Resources>
         </ListView>
-    </StackPanel>
+    </DockPanel>
 </Window>
