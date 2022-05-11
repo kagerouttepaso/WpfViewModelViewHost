@@ -8,9 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="DynamicData" Version="7.7.14" />
     <PackageReference Include="MessagePipe" Version="1.7.2" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
     <PackageReference Include="Microsoft.Toolkit.Mvvm" Version="7.1.2" />
+    <PackageReference Include="ObservableCollections" Version="1.1.2" />
     <PackageReference Include="ReactiveProperty" Version="8.1.0" />
     <PackageReference Include="Scrutor" Version="4.1.0" />
     <PackageReference Include="System.Reactive" Version="5.0.0" />

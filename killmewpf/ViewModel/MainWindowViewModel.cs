@@ -1,27 +1,27 @@
-﻿using killmewpf.Ioc;
+﻿using DynamicData;
+using killmewpf.Ioc;
 using killmewpf.Message;
+using killmewpf.Model;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Reactive.Bindings;
+using Reactive.Bindings.Extensions;
+using System;
 using System.Collections.ObjectModel;
+using System.Reactive.Disposables;
 using System.Threading.Tasks;
 
 namespace killmewpf.ViewModel
 {
-    public class MainWindowViewModel : ObservableObject, ITransientService
+    public class MainWindowViewModel : ObservableObject, ITransientService, IDisposable
     {
-        private ObservableCollection<ISubViewModel> _subViewModels = new ObservableCollection<ISubViewModel>()
-        {
-            new SubViewModel1(),
-            new SubViewModel2(),
-            new SubViewModel1(),
-            new SubViewModel1(),
-        };
+        private readonly CompositeDisposable disposables = new();
+        private readonly DataModel dataModel;
 
 
-        public ObservableCollection<ISubViewModel> SubViewModels
+        public ReadOnlyObservableCollection<ISubViewModel> SubViewModels { get; }
+        public void Dispose()
         {
-            get => _subViewModels;
-            set => _subViewModels = value;
+            disposables.Dispose();
         }
 
         public string Title => "Sample";
@@ -31,19 +31,33 @@ namespace killmewpf.ViewModel
         private async Task<string> TestAsync()
         {
             await Task.Delay(1000);
-            _subViewModels.Add(new SubViewModel1());
+            dataModel.SubViewModels.Add(new SubViewModel1());
             await messageBoxHandler.InvokeAsync("テスト");
             await Task.Delay(1000);
-            _subViewModels.Add(new SubViewModel2());
+            await Task.Run(() =>
+            {
+                dataModel.SubViewModels.Add(new SubViewModel2());
+            });
 
             return "Comp";
         }
 
         private readonly IMessageBoxHandler messageBoxHandler;
 
-        public MainWindowViewModel(IMessageBoxHandler messageBoxHandler)
+        public MainWindowViewModel(DataModel dataModel, IMessageBoxHandler messageBoxHandler)
         {
             this.messageBoxHandler = messageBoxHandler;
+            this.dataModel = dataModel;
+
+            dataModel.SubViewModels
+                .Connect()
+                .ObserveOnUIDispatcher()
+                .Bind(out var collection)
+                .DisposeMany()
+                .Subscribe()
+                .AddTo(disposables);
+            SubViewModels = collection;
+
             TestCommand = new AsyncReactiveCommand()
                 .WithSubscribe(TestAsync);
         }
