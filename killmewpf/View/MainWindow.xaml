@@ -1,0 +1,25 @@
+﻿<Window
+    x:Class="killmewpf.View.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:v="clr-namespace:killmewpf.View"
+    xmlns:vm="clr-namespace:killmewpf.ViewModel"
+    Title="MainWindow"
+    Width="800"
+    Height="450"
+    d:DataContext="{d:DesignInstance Type=vm:MainWindowViewModel,
+                                     IsDesignTimeCreatable=True}"
+    mc:Ignorable="d">
+    <Window.Resources>
+    </Window.Resources>
+    <StackPanel>
+        <TextBlock Text="{Binding Path=Title}" />
+        <ListView
+            ItemsSource="{Binding Path=SubViewModels}"
+            VirtualizingPanel.IsVirtualizing="True"
+            VirtualizingPanel.VirtualizationMode="Standard">
+        </ListView>
+    </StackPanel>
+</Window>
